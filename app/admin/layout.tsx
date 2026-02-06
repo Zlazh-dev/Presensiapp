@@ -39,6 +39,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const adminMenu = [
         { label: 'Dashboard', href: '/admin', icon: Icons.Home },
         { label: 'QR Display', href: '/admin/qr', icon: Icons.Monitor },
+        { label: 'Fingerprint Sync', href: '/admin/fingerprint', icon: Icons.Fingerprint },
         { label: 'Guru', href: '/admin/teachers', icon: Icons.Users },
         { label: 'Laporan', href: '/admin/reports', icon: Icons.FileText },
         { label: 'Pengaturan', href: '/admin/settings', icon: Icons.Settings },
@@ -61,22 +62,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     };
 
     return (
-        <div className="flex h-screen bg-slate-50">
+        <div className="flex h-screen bg-slate-900">
             {/* Sidebar */}
-            <aside className="w-64 bg-white border-r border-slate-200 flex flex-col">
-                <div className="p-6 border-b border-slate-200">
-                    <h1 className="text-xl font-bold text-slate-800">Admin Panel</h1>
-                    <p className="text-sm text-slate-500 mt-1">{user.name}</p>
+            <aside className="w-64 bg-[#0f172a] border-r border-slate-800 flex flex-col">
+                <div className="p-6 border-b border-slate-800">
+                    <h1 className="text-xl font-bold text-slate-100">Admin Panel</h1>
+                    <p className="text-sm text-slate-400 mt-1">{user.name}</p>
                 </div>
 
-                <nav className="flex-1 p-4 space-y-1">
+                <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
                     {adminMenu.map((item) => (
                         <Link
                             key={item.href}
                             href={item.href}
                             className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${isActive(item.href)
-                                    ? 'bg-purple-50 text-purple-700 font-medium'
-                                    : 'text-slate-600 hover:bg-slate-50'
+                                ? 'bg-purple-900/30 text-purple-300 font-medium'
+                                : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
                                 }`}
                         >
                             <item.icon className="w-5 h-5" />
@@ -85,10 +86,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     ))}
                 </nav>
 
-                <div className="p-4 border-t border-slate-200">
+                <div className="p-4 border-t border-slate-800">
                     <button
                         onClick={handleLogout}
-                        className="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 w-full transition-colors"
+                        className="flex items-center space-x-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-800 hover:text-slate-200 w-full transition-colors"
                     >
                         <Icons.LogOut className="w-5 h-5" />
                         <span>Logout</span>
@@ -97,7 +98,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </aside>
 
             {/* Main content */}
-            <main className="flex-1 overflow-auto">
+            <main className="flex-1 overflow-auto bg-slate-900">
                 {children}
             </main>
         </div>

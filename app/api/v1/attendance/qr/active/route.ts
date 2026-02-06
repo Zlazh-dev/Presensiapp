@@ -1,16 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
-// Helper: Get date at midnight (00:00:00)
-function getDateAtMidnight(dateStr?: string): Date {
-    if (dateStr) {
-        const date = new Date(dateStr);
-        date.setHours(0, 0, 0, 0);
-        return date;
+// Helper: Parse date parameter and return Date at midnight, or null if invalid
+function parseDateParam(dateStr?: string | null): Date | null {
+    // No date provided or "today" - use current date
+    if (!dateStr || dateStr === 'today') {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return today;
     }
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return today;
+
+    // Try to parse as YYYY-MM-DD format
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(dateStr)) {
+        return null; // Invalid format
+    }
+
+    const date = new Date(dateStr + 'T00:00:00');
+    if (isNaN(date.getTime())) {
+        return null; // Invalid date
+    }
+
+    return date;
 }
 
 // GET /api/v1/attendance/qr/active - Get active QR sessions for display
@@ -19,8 +30,15 @@ export async function GET(request: NextRequest) {
         const { searchParams } = new URL(request.url);
         const dateParam = searchParams.get('date');
 
-        // Get date (default to today)
-        const date = getDateAtMidnight(dateParam || undefined);
+        // Parse and validate date
+        const date = parseDateParam(dateParam);
+        if (!date) {
+            return NextResponse.json(
+                { message: 'Invalid date format. Use YYYY-MM-DD or "today".' },
+                { status: 400 }
+            );
+        }
+
         const now = new Date();
 
         // Find active QR sessions for this date

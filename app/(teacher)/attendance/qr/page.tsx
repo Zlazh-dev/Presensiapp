@@ -174,13 +174,13 @@ export default function TeacherQrScannerPage() {
         if (scanResult.status === 'success') {
             const isLate = scanResult.attendance.status === 'LATE';
             return (
-                <div className="min-h-screen bg-slate-50 p-6 flex flex-col items-center justify-center text-center">
+                <div className="min-h-screen p-6 flex flex-col items-center justify-center text-center">
                     <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mb-6 animate-bounce">
                         <Icons.Check className="w-10 h-10 text-emerald-600" />
                     </div>
 
-                    <h1 className="text-2xl font-bold text-slate-800 mb-2">Presensi Berhasil!</h1>
-                    <p className="text-slate-500 mb-8">Data kehadiran Anda telah tercatat.</p>
+                    <h1 className="text-2xl font-bold text-slate-100 mb-2">Presensi Berhasil!</h1>
+                    <p className="text-slate-400 mb-8">Data kehadiran Anda telah tercatat.</p>
 
                     <div className="bg-white p-6 rounded-2xl shadow-xl w-full max-w-sm space-y-4 border border-slate-100">
                         <div className="flex justify-between items-center py-2 border-b border-slate-50">
@@ -221,13 +221,13 @@ export default function TeacherQrScannerPage() {
 
         // Error Result
         return (
-            <div className="min-h-screen bg-slate-50 p-6 flex flex-col items-center justify-center text-center">
+            <div className="min-h-screen p-6 flex flex-col items-center justify-center text-center">
                 <div className="w-20 h-20 bg-rose-100 rounded-full flex items-center justify-center mb-6">
                     <Icons.X className="w-10 h-10 text-rose-600" />
                 </div>
 
-                <h1 className="text-2xl font-bold text-slate-800 mb-2">Gagal Scan</h1>
-                <p className="text-rose-600 font-medium mb-8 max-w-xs">{scanResult.message}</p>
+                <h1 className="text-2xl font-bold text-slate-100 mb-2">Gagal Scan</h1>
+                <p className="text-rose-400 font-medium mb-8 max-w-xs">{scanResult.message}</p>
 
                 <button
                     onClick={resetScan}

@@ -205,15 +205,15 @@ export default function WorkSchedulesSettingsPage() {
 
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Pengaturan Jadwal Kerja</h1>
+                <h1 className="text-3xl font-extrabold text-slate-100 tracking-tight">Pengaturan Jadwal Kerja</h1>
                 <p className="text-slate-500 font-medium">Kelola template jam kerja dan penugasan jadwal khusus.</p>
             </div>
 
             {/* --- SECTION A: TEMPLATES --- */}
             <section className="space-y-6">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                        <Icons.Settings className="w-5 h-5 text-purple-600" /> Template Jadwal
+                    <h2 className="text-xl font-bold text-slate-200 flex items-center gap-2">
+                        <Icons.Settings className="w-5 h-5 text-purple-400" /> Template Jadwal
                     </h2>
                     <button
                         onClick={() => { setEditingTemplate(null); setIsTemplateModalOpen(true); }}
@@ -223,9 +223,9 @@ export default function WorkSchedulesSettingsPage() {
                     </button>
                 </div>
 
-                <div className="bg-white rounded-3xl shadow-lg border border-purple-50 overflow-hidden">
+                <div className="bg-slate-800 rounded-3xl shadow-lg border border-slate-700 overflow-hidden">
                     {loadingTemplates ? (
-                        <div className="p-8 text-center text-slate-500">Memuat template...</div>
+                        <div className="p-8 text-center text-slate-400">Memuat template...</div>
                     ) : errorTemplates ? (
                         <div className="p-8 text-center">
                             <p className="text-red-500 mb-2">{errorTemplates}</p>
@@ -236,24 +236,24 @@ export default function WorkSchedulesSettingsPage() {
                     ) : (
                         <div className="overflow-x-auto">
                             <table className="w-full text-left border-collapse">
-                                <thead className="bg-purple-50/50 border-b border-purple-100">
+                                <thead className="bg-slate-900/50 border-b border-slate-700">
                                     <tr>
-                                        <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase">Nama Template</th>
-                                        <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase text-center">Jam Kerja</th>
-                                        <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase text-center">Toleransi</th>
-                                        <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase">Hari Kerja</th>
-                                        <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase text-center">Status</th>
-                                        <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase text-right">Aksi</th>
+                                        <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase">Nama Template</th>
+                                        <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase text-center">Jam Kerja</th>
+                                        <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase text-center">Toleransi</th>
+                                        <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase">Hari Kerja</th>
+                                        <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase text-center">Status</th>
+                                        <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase text-right">Aksi</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-slate-100">
+                                <tbody className="divide-y divide-slate-700">
                                     {templates.map(t => (
-                                        <tr key={t.id} className="hover:bg-purple-50/30 transition-colors">
-                                            <td className="py-4 px-6 font-bold text-slate-800">{t.name}</td>
-                                            <td className="py-4 px-6 text-center text-slate-600 font-mono text-sm">
+                                        <tr key={t.id} className="hover:bg-slate-700/50 transition-colors">
+                                            <td className="py-4 px-6 font-bold text-slate-200">{t.name}</td>
+                                            <td className="py-4 px-6 text-center text-slate-400 font-mono text-sm">
                                                 {t.startTime} - {t.endTime}
                                             </td>
-                                            <td className="py-4 px-6 text-center text-slate-600">
+                                            <td className="py-4 px-6 text-center text-slate-400">
                                                 {t.lateToleranceMinutes} m
                                             </td>
                                             <td className="py-4 px-6 text-slate-500 text-sm">
@@ -261,17 +261,17 @@ export default function WorkSchedulesSettingsPage() {
                                             </td>
                                             <td className="py-4 px-6 text-center">
                                                 {t.isDefault ? (
-                                                    <span className="inline-block px-2 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-bold uppercase rounded-md">
+                                                    <span className="inline-block px-2 py-1 bg-emerald-900/30 text-emerald-400 text-[10px] font-bold uppercase rounded-md ring-1 ring-emerald-900/50">
                                                         Default
                                                     </span>
                                                 ) : (
-                                                    <span className="text-slate-300 text-[10px] font-bold uppercase">-</span>
+                                                    <span className="text-slate-500 text-[10px] font-bold uppercase">-</span>
                                                 )}
                                             </td>
                                             <td className="py-4 px-6 text-right space-x-2">
                                                 <button
                                                     onClick={() => { setEditingTemplate(t); setIsTemplateModalOpen(true); }}
-                                                    className="text-amber-600 hover:text-amber-700 font-bold text-sm"
+                                                    className="text-amber-500 hover:text-amber-400 font-bold text-sm"
                                                 >
                                                     Edit
                                                 </button>
@@ -292,29 +292,29 @@ export default function WorkSchedulesSettingsPage() {
             </section>
 
             {/* --- SECTION B: ASSIGNMENTS --- */}
-            <section className="space-y-6 pt-6 border-t border-slate-200">
+            <section className="space-y-6 pt-6 border-t border-slate-700">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                        <Icons.Calendar className="w-5 h-5 text-purple-600" /> Penugasan Jadwal (Kalender)
+                    <h2 className="text-xl font-bold text-slate-200 flex items-center gap-2">
+                        <Icons.Calendar className="w-5 h-5 text-purple-400" /> Penugasan Jadwal (Kalender)
                     </h2>
 
                     {/* Filter */}
                     <form
                         onSubmit={(e) => { e.preventDefault(); fetchAssignments(); }}
-                        className="flex items-center gap-2 bg-white p-1 rounded-xl border border-slate-200 shadow-sm"
+                        className="flex items-center gap-2 bg-slate-800 p-1 rounded-xl border border-slate-700 shadow-sm"
                     >
                         <input
                             type="date"
-                            className="text-xs px-2 py-1.5 rounded-lg border-none focus:ring-0 text-slate-600"
+                            className="text-xs px-2 py-1.5 rounded-lg border-none focus:ring-0 text-slate-400 bg-transparent [color-scheme:dark]"
                             value={filterFrom} onChange={e => setFilterFrom(e.target.value)}
                         />
-                        <span className="text-slate-300">-</span>
+                        <span className="text-slate-500">-</span>
                         <input
                             type="date"
-                            className="text-xs px-2 py-1.5 rounded-lg border-none focus:ring-0 text-slate-600"
+                            className="text-xs px-2 py-1.5 rounded-lg border-none focus:ring-0 text-slate-400 bg-transparent [color-scheme:dark]"
                             value={filterTo} onChange={e => setFilterTo(e.target.value)}
                         />
-                        <button type="submit" className="p-1.5 bg-purple-50 text-purple-600 rounded-lg hover:bg-purple-100">
+                        <button type="submit" className="p-1.5 bg-purple-900/30 text-purple-400 rounded-lg hover:bg-purple-900/50">
                             <Icons.Search className="w-4 h-4" />
                         </button>
                     </form>
@@ -323,13 +323,13 @@ export default function WorkSchedulesSettingsPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Form Assignment (Mobile: Top, Desktop: Left/Sidebar Style) */}
                     <div className="lg:col-span-1">
-                        <div className="bg-white p-6 rounded-3xl shadow-lg border border-purple-50 sticky top-4">
-                            <h3 className="font-bold text-slate-800 mb-4">Buat Jadwal Khusus</h3>
+                        <div className="bg-slate-800 p-6 rounded-3xl shadow-lg border border-slate-700 sticky top-4">
+                            <h3 className="font-bold text-slate-200 mb-4">Buat Jadwal Khusus</h3>
                             <form onSubmit={handleAddAssignment} className="space-y-4">
                                 <div>
                                     <label className="block text-xs font-bold text-slate-400 mb-1">Pilih Template</label>
                                     <select
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 text-slate-200"
                                         value={newAssignTemplateId}
                                         onChange={e => setNewAssignTemplateId(Number(e.target.value))}
                                         required
@@ -345,7 +345,7 @@ export default function WorkSchedulesSettingsPage() {
                                         <label className="block text-xs font-bold text-slate-400 mb-1">Mulai</label>
                                         <input
                                             type="date"
-                                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 text-slate-200 [color-scheme:dark]"
                                             value={newAssignStart}
                                             onChange={e => setNewAssignStart(e.target.value)}
                                             required
@@ -355,7 +355,7 @@ export default function WorkSchedulesSettingsPage() {
                                         <label className="block text-xs font-bold text-slate-400 mb-1">Selesai</label>
                                         <input
                                             type="date"
-                                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                            className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 text-slate-200 [color-scheme:dark]"
                                             value={newAssignEnd}
                                             onChange={e => setNewAssignEnd(e.target.value)}
                                             required
@@ -392,13 +392,13 @@ export default function WorkSchedulesSettingsPage() {
                         ) : (
                             <div className="space-y-3">
                                 {assignments.map(a => (
-                                    <div key={a.id} className="flex items-center justify-between p-4 bg-white rounded-2xl border border-slate-100 shadow-sm hover:border-purple-200 transition-colors group">
+                                    <div key={a.id} className="flex items-center justify-between p-4 bg-slate-800 rounded-2xl border border-slate-700 shadow-sm hover:border-purple-500/50 transition-colors group">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center text-purple-600">
+                                            <div className="w-10 h-10 rounded-full bg-purple-900/30 flex items-center justify-center text-purple-400">
                                                 <Icons.Calendar className="w-5 h-5" />
                                             </div>
                                             <div>
-                                                <div className="font-bold text-slate-800">{a.workScheduleName}</div>
+                                                <div className="font-bold text-slate-200">{a.workScheduleName}</div>
                                                 <div className="text-xs text-slate-500 font-mono">
                                                     {new Date(a.startDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}
                                                     {' - '}
@@ -424,12 +424,12 @@ export default function WorkSchedulesSettingsPage() {
             {/* --- MODAL TEMPLATE --- */}
             {isTemplateModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
-                    <div className="bg-white rounded-3xl shadow-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+                    <div className="bg-slate-800 rounded-3xl shadow-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto border border-slate-700">
                         <div className="flex items-center justify-between mb-6">
-                            <h3 className="text-xl font-bold text-slate-800">
+                            <h3 className="text-xl font-bold text-slate-100">
                                 {editingTemplate ? 'Edit Template' : 'Buat Template Baru'}
                             </h3>
-                            <button onClick={() => setIsTemplateModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+                            <button onClick={() => setIsTemplateModalOpen(false)} className="text-slate-400 hover:text-slate-200">
                                 <Icons.X className="w-6 h-6" />
                             </button>
                         </div>
@@ -441,7 +441,7 @@ export default function WorkSchedulesSettingsPage() {
                                     name="name"
                                     type="text"
                                     defaultValue={editingTemplate?.name}
-                                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 font-bold text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-slate-500"
                                     placeholder="Contoh: Jadwal Normal, Jadwal Puasa"
                                     required
                                 />
@@ -454,7 +454,7 @@ export default function WorkSchedulesSettingsPage() {
                                         name="startTime"
                                         type="time"
                                         defaultValue={editingTemplate?.startTime || "07:00"}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-mono font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 font-mono font-bold text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 [color-scheme:dark]"
                                         required
                                     />
                                 </div>
@@ -464,7 +464,7 @@ export default function WorkSchedulesSettingsPage() {
                                         name="endTime"
                                         type="time"
                                         defaultValue={editingTemplate?.endTime || "15:00"}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-mono font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 font-mono font-bold text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 [color-scheme:dark]"
                                         required
                                     />
                                 </div>
@@ -478,7 +478,7 @@ export default function WorkSchedulesSettingsPage() {
                                         type="number"
                                         min="0"
                                         defaultValue={editingTemplate?.lateToleranceMinutes || 10}
-                                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 font-bold text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
                                         required
                                     />
                                 </div>
@@ -488,9 +488,9 @@ export default function WorkSchedulesSettingsPage() {
                                             type="checkbox"
                                             name="isDefault"
                                             defaultChecked={editingTemplate?.isDefault}
-                                            className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500 border-gray-300"
+                                            className="w-5 h-5 text-purple-600 rounded focus:ring-purple-500 border-slate-600 bg-slate-900"
                                         />
-                                        <span className="text-sm font-bold text-slate-700">Set sebagai Default?</span>
+                                        <span className="text-sm font-bold text-slate-300">Set sebagai Default?</span>
                                     </label>
                                 </div>
                             </div>
@@ -499,15 +499,15 @@ export default function WorkSchedulesSettingsPage() {
                                 <label className="block text-xs font-bold text-slate-400 mb-2 uppercase">Hari Kerja</label>
                                 <div className="flex flex-wrap gap-2">
                                     {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(day => (
-                                        <label key={day} className="flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-lg border border-slate-200 cursor-pointer hover:bg-slate-100">
+                                        <label key={day} className="flex items-center gap-2 bg-slate-900 px-3 py-2 rounded-lg border border-slate-700 cursor-pointer hover:bg-slate-700 transition-colors">
                                             <input
                                                 type="checkbox"
                                                 name="workingDays"
                                                 value={day}
                                                 defaultChecked={editingTemplate ? editingTemplate.workingDays.includes(day) : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].includes(day)}
-                                                className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 border-gray-300"
+                                                className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 border-slate-600 bg-slate-800"
                                             />
-                                            <span className="text-xs font-bold text-slate-600">{day}</span>
+                                            <span className="text-xs font-bold text-slate-300">{day}</span>
                                         </label>
                                     ))}
                                 </div>
@@ -517,7 +517,7 @@ export default function WorkSchedulesSettingsPage() {
                                 <button
                                     type="button"
                                     onClick={() => setIsTemplateModalOpen(false)}
-                                    className="flex-1 py-3 bg-slate-100 text-slate-600 font-bold rounded-xl hover:bg-slate-200"
+                                    className="flex-1 py-3 bg-slate-700 text-slate-300 font-bold rounded-xl hover:bg-slate-600 transition-colors"
                                 >
                                     Batal
                                 </button>

@@ -16,7 +16,49 @@ function isValidWorkingDays(days: string[]): boolean {
 // GET /api/v1/settings/work-schedules - List all schedule templates
 export async function GET(request: NextRequest) {
     try {
+        // Auth check
+        const token = request.cookies.get('auth_token')?.value;
+        if (!token) {
+            return NextResponse.json(
+                { message: 'Unauthenticated' },
+                { status: 401 }
+            );
+        }
+
+        const { verifyAuthToken } = await import('@/lib/auth');
+        const payload = await verifyAuthToken(token);
+        if (!payload) {
+            return NextResponse.json(
+                { message: 'Invalid or expired token' },
+                { status: 401 }
+            );
+        }
+
+        // Fetch user and check role
+        const user = await prisma.user.findUnique({
+            where: { id: payload.userId },
+        });
+
+        if (!user) {
+            return NextResponse.json(
+                { message: 'User not found' },
+                { status: 404 }
+            );
+        }
+
+        if (user.role !== 'ADMIN' && user.role !== 'PRINCIPAL') {
+            return NextResponse.json(
+                { message: 'Only ADMIN or PRINCIPAL can access this endpoint' },
+                { status: 403 }
+            );
+        }
+
         const schedules = await prisma.workSchedule.findMany({
+            include: {
+                _count: {
+                    select: { assignments: true }
+                }
+            },
             orderBy: [
                 { isDefault: 'desc' }, // Default first
                 { name: 'asc' }
@@ -36,6 +78,43 @@ export async function GET(request: NextRequest) {
 // POST /api/v1/settings/work-schedules - Create new schedule template
 export async function POST(request: NextRequest) {
     try {
+        // Auth check
+        const token = request.cookies.get('auth_token')?.value;
+        if (!token) {
+            return NextResponse.json(
+                { message: 'Unauthenticated' },
+                { status: 401 }
+            );
+        }
+
+        const { verifyAuthToken } = await import('@/lib/auth');
+        const payload = await verifyAuthToken(token);
+        if (!payload) {
+            return NextResponse.json(
+                { message: 'Invalid or expired token' },
+                { status: 401 }
+            );
+        }
+
+        // Fetch user and check role
+        const user = await prisma.user.findUnique({
+            where: { id: payload.userId },
+        });
+
+        if (!user) {
+            return NextResponse.json(
+                { message: 'User not found' },
+                { status: 404 }
+            );
+        }
+
+        if (user.role !== 'ADMIN' && user.role !== 'PRINCIPAL') {
+            return NextResponse.json(
+                { message: 'Only ADMIN or PRINCIPAL can access this endpoint' },
+                { status: 403 }
+            );
+        }
+
         const body = await request.json();
         const { name, startTime, endTime, lateToleranceMinutes, workingDays, isDefault } = body;
 

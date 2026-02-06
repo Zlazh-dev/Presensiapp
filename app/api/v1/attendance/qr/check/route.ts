@@ -67,16 +67,19 @@ export async function POST(request: NextRequest) {
         // const user = await prisma.user.findUnique({ where: { id: session.user.id } });
 
         // PLACEHOLDER: Get user from header (for testing)
-        const userId = request.headers.get('x-user-id');
-        if (!userId) {
+        const userIdFromHeader = request.headers.get('x-user-id');
+        if (!userIdFromHeader) {
             return NextResponse.json(
                 { message: 'Authentication required. Please provide x-user-id header for testing.' },
                 { status: 401 }
             );
         }
-
+        // Fetch user
+        // Assuming payload.userId would come from a proper auth system (e.g., JWT payload)
+        // For now, using userIdFromHeader as a placeholder for payload.userId
         const user = await prisma.user.findUnique({
-            where: { id: parseInt(userId) },
+            where: { id: parseInt(userIdFromHeader) }, // Using userIdFromHeader as placeholder for payload.userId
+            include: { teacher: true },
         });
 
         if (!user) {
@@ -94,17 +97,15 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        // Find teacher by matching username to NIP
-        const teacher = await prisma.teacher.findFirst({
-            where: { nip: user.username },
-        });
-
-        if (!teacher) {
+        // Check if user has teacher record
+        if (!user.teacher) {
             return NextResponse.json(
                 { message: 'Teacher record not found for this user' },
                 { status: 404 }
             );
         }
+
+        const teacherId = user.teacher.id;
 
         // Validate QR token
         const now = new Date();
@@ -141,7 +142,7 @@ export async function POST(request: NextRequest) {
 
         // Prepare attendance data based on QR type
         const attendanceData: any = {
-            teacherId: teacher.id,
+            teacherId: teacherId,
             date: qrSession.date,
         };
 
@@ -169,7 +170,7 @@ export async function POST(request: NextRequest) {
         const attendance = await prisma.attendance.upsert({
             where: {
                 teacherId_date: {
-                    teacherId: teacher.id,
+                    teacherId: teacherId,
                     date: qrSession.date,
                 },
             },
@@ -184,14 +185,14 @@ export async function POST(request: NextRequest) {
                 },
             create: qrSession.type === 'CHECK_IN'
                 ? {
-                    teacherId: teacher.id,
+                    teacherId: teacherId,
                     date: qrSession.date,
                     checkInTime: attendanceData.checkInTime,
                     status: attendanceData.status,
                     lateMinutes: attendanceData.lateMinutes,
                 }
                 : {
-                    teacherId: teacher.id,
+                    teacherId: teacherId,
                     date: qrSession.date,
                     checkOutTime: attendanceData.checkOutTime,
                     status: 'ABSENT' as AttendanceStatusType, // Will be updated when check-in happens

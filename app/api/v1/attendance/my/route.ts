@@ -1,43 +1,66 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { verifyAuthToken } from '@/lib/auth';
 
 // GET /api/v1/attendance/my - Get attendance history for logged-in teacher
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
 
-        // Temporary: get teacher_id from query (will be replaced with auth later)
-        const teacherIdParam = searchParams.get('teacher_id');
-        const startDate = searchParams.get('start_date');
-        const endDate = searchParams.get('end_date');
+        // Get token from cookie
+        const token = request.cookies.get('auth_token')?.value;
 
-        // Validate teacher_id
-        if (!teacherIdParam) {
+        if (!token) {
             return NextResponse.json(
-                { message: 'teacher_id is required' },
-                { status: 400 }
+                { message: 'Unauthenticated' },
+                { status: 401 }
             );
         }
 
-        const teacherId = Number(teacherIdParam);
-        if (Number.isNaN(teacherId) || teacherId <= 0) {
+        // Verify token
+        const payload = await verifyAuthToken(token);
+
+        if (!payload) {
             return NextResponse.json(
-                { message: 'Invalid teacher_id' },
-                { status: 400 }
+                { message: 'Invalid or expired token' },
+                { status: 401 }
             );
         }
 
-        // Verify teacher exists
-        const teacher = await prisma.teacher.findUnique({
-            where: { id: teacherId },
+        // Fetch user from database with teacher relation
+        const user = await prisma.user.findUnique({
+            where: { id: payload.userId },
+            include: { teacher: true },
         });
 
-        if (!teacher) {
+        if (!user) {
             return NextResponse.json(
-                { message: 'Teacher not found' },
+                { message: 'User not found' },
                 { status: 404 }
             );
         }
+
+        // Check if user is a teacher
+        if (user.role !== 'TEACHER') {
+            return NextResponse.json(
+                { message: 'Only TEACHER can access this endpoint' },
+                { status: 403 }
+            );
+        }
+
+        // Check if user has teacher record
+        if (!user.teacher) {
+            return NextResponse.json(
+                { message: 'Teacher not found for current user' },
+                { status: 404 }
+            );
+        }
+
+        const teacherId = user.teacher.id;
+
+        // Get date range from query params
+        const startDate = searchParams.get('start_date');
+        const endDate = searchParams.get('end_date');
 
         // Build date range (default to current month if not provided)
         const now = new Date();
@@ -52,7 +75,7 @@ export async function GET(request: NextRequest) {
         // Fetch attendance records
         const attendances = await prisma.attendance.findMany({
             where: {
-                teacherId,
+                teacherId: teacherId,
                 date: {
                     gte: start,
                     lte: end,
@@ -64,7 +87,7 @@ export async function GET(request: NextRequest) {
         });
 
         // Transform data to match API response format
-        const data = attendances.map((att: (typeof attendances)[number]) => ({
+        const data = attendances.map((att) => ({
             date: att.date.toISOString().split('T')[0], // YYYY-MM-DD
             check_in_time: att.checkInTime
                 ? att.checkInTime.toISOString().substring(11, 16) // HH:mm
@@ -81,21 +104,11 @@ export async function GET(request: NextRequest) {
         // Calculate summary
         const summary = {
             total_days: attendances.length,
-            present: attendances.filter(
-                (a: (typeof attendances)[number]) => a.status === 'PRESENT'
-            ).length,
-            late: attendances.filter(
-                (a: (typeof attendances)[number]) => a.status === 'LATE'
-            ).length,
-            leave: attendances.filter(
-                (a: (typeof attendances)[number]) => a.status === 'LEAVE'
-            ).length,
-            sick: attendances.filter(
-                (a: (typeof attendances)[number]) => a.status === 'SICK'
-            ).length,
-            absent: attendances.filter(
-                (a: (typeof attendances)[number]) => a.status === 'ABSENT'
-            ).length,
+            present: attendances.filter((a) => a.status === 'PRESENT').length,
+            late: attendances.filter((a) => a.status === 'LATE').length,
+            leave: attendances.filter((a) => a.status === 'LEAVE').length,
+            sick: attendances.filter((a) => a.status === 'SICK').length,
+            absent: attendances.filter((a) => a.status === 'ABSENT').length,
         };
 
         return NextResponse.json({

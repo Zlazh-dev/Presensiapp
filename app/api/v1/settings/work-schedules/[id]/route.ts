@@ -19,6 +19,43 @@ export async function PUT(
     context: { params: Promise<{ id: string }> }
 ) {
     try {
+        // Auth check
+        const token = request.cookies.get('auth_token')?.value;
+        if (!token) {
+            return NextResponse.json(
+                { message: 'Unauthenticated' },
+                { status: 401 }
+            );
+        }
+
+        const { verifyAuthToken } = await import('@/lib/auth');
+        const payload = await verifyAuthToken(token);
+        if (!payload) {
+            return NextResponse.json(
+                { message: 'Invalid or expired token' },
+                { status: 401 }
+            );
+        }
+
+        // Fetch user and check role
+        const user = await prisma.user.findUnique({
+            where: { id: payload.userId },
+        });
+
+        if (!user) {
+            return NextResponse.json(
+                { message: 'User not found' },
+                { status: 404 }
+            );
+        }
+
+        if (user.role !== 'ADMIN' && user.role !== 'PRINCIPAL') {
+            return NextResponse.json(
+                { message: 'Only ADMIN or PRINCIPAL can access this endpoint' },
+                { status: 403 }
+            );
+        }
+
         const { id } = await context.params;
         const scheduleId = parseInt(id);
 
@@ -175,6 +212,43 @@ export async function DELETE(
     context: { params: Promise<{ id: string }> }
 ) {
     try {
+        // Auth check
+        const token = request.cookies.get('auth_token')?.value;
+        if (!token) {
+            return NextResponse.json(
+                { message: 'Unauthenticated' },
+                { status: 401 }
+            );
+        }
+
+        const { verifyAuthToken } = await import('@/lib/auth');
+        const payload = await verifyAuthToken(token);
+        if (!payload) {
+            return NextResponse.json(
+                { message: 'Invalid or expired token' },
+                { status: 401 }
+            );
+        }
+
+        // Fetch user and check role
+        const user = await prisma.user.findUnique({
+            where: { id: payload.userId },
+        });
+
+        if (!user) {
+            return NextResponse.json(
+                { message: 'User not found' },
+                { status: 404 }
+            );
+        }
+
+        if (user.role !== 'ADMIN' && user.role !== 'PRINCIPAL') {
+            return NextResponse.json(
+                { message: 'Only ADMIN or PRINCIPAL can access this endpoint' },
+                { status: 403 }
+            );
+        }
+
         const { id } = await context.params;
         const scheduleId = parseInt(id);
 

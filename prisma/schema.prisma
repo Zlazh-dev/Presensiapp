@@ -50,6 +50,10 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
+  // Relations
+  teacher      Teacher? @relation(fields: [teacherId], references: [id])
+  teacherId    Int?     @unique @map("teacher_id")
+
   @@map("users")
 }
 
@@ -64,6 +68,7 @@ model Teacher {
   updatedAt     DateTime       @updatedAt
   
   // Relations
+  user          User?
   attendances   Attendance[]
 
   @@map("teachers")
@@ -145,3 +150,20 @@ model QrSession {
   @@index([date, type])
   @@map("qr_sessions")
 }
+
+model SpecialDay {
+  id         Int      @id @default(autoincrement())
+  date       DateTime @unique // Date affected (date-only, time ignored)
+  name       String   // Event name, e.g., "Monthly Teacher Meeting"
+  type       String   // "OVERTIME", "CUSTOM_SCHEDULE", "HOLIDAY"
+  startTime  String?  @map("start_time") // Format: "HH:mm", e.g., "08:00"
+  endTime    String?  @map("end_time")   // Format: "HH:mm"
+  isOvertime Boolean  @default(false) @map("is_overtime")
+  notes      String?
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@index([date])
+  @@map("special_days")
+}
+

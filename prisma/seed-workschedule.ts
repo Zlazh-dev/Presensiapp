@@ -8,10 +8,12 @@ async function seedWorkSchedule() {
         where: { id: 1 },
         update: {},
         create: {
+            name: 'Regular', // Required name field
             startTime: '07:00',
             endTime: '15:00',
             lateToleranceMinutes: 10,
             workingDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+            isDefault: true, // Mark as default schedule
         },
     });
 

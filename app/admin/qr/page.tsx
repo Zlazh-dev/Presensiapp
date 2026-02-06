@@ -17,6 +17,7 @@ export default function AdminQrDisplayPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
     const [isGenerating, setIsGenerating] = useState(false);
+    const [scheduleSource, setScheduleSource] = useState<string | null>(null);
 
     // Modal state
     const [showGenerateModal, setShowGenerateModal] = useState(false);
@@ -24,13 +25,19 @@ export default function AdminQrDisplayPage() {
     const [generateValidFrom, setGenerateValidFrom] = useState('');
     const [generateValidUntil, setGenerateValidUntil] = useState('');
 
-    const fetchActiveSessions = async () => {
+    const fetchActiveSessions = async (retryOnEmpty = false) => {
         try {
             const response = await fetch('/api/v1/attendance/qr/active');
             if (response.ok) {
                 const data = await response.json();
-                setActiveSessions(data.data || []);
+                const sessions = data.data || [];
+                setActiveSessions(sessions);
                 setLastUpdated(new Date());
+
+                // If empty and retryOnEmpty is true (initial load), try auto-generate
+                if (sessions.length === 0 && retryOnEmpty) {
+                    await autoGenerateSessions();
+                }
             }
         } catch (error) {
             console.error('Failed to fetch QR sessions:', error);
@@ -39,11 +46,33 @@ export default function AdminQrDisplayPage() {
         }
     };
 
-    useEffect(() => {
-        fetchActiveSessions();
+    const autoGenerateSessions = async () => {
+        setIsGenerating(true);
+        try {
+            const response = await fetch('/api/v1/attendance/qr/auto-generate', {
+                method: 'POST',
+            });
 
-        // Auto refresh every 30 seconds
-        const interval = setInterval(fetchActiveSessions, 30000);
+            if (response.ok) {
+                const data = await response.json();
+                // Data format: { date, schedule: { name, ... }, sessions: [...] }
+                setActiveSessions(data.sessions || []);
+                setScheduleSource(data.schedule?.name || null);
+                setLastUpdated(new Date());
+            }
+        } catch (error) {
+            console.error('Failed to auto-generate sessions:', error);
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
+    useEffect(() => {
+        // Initial fetch with auto-generate retry
+        fetchActiveSessions(true);
+
+        // Auto refresh every 30 seconds (without auto-generate retry)
+        const interval = setInterval(() => fetchActiveSessions(false), 30000);
         return () => clearInterval(interval);
     }, []);
 
@@ -65,7 +94,7 @@ export default function AdminQrDisplayPage() {
 
             if (response.ok) {
                 setShowGenerateModal(false);
-                fetchActiveSessions();
+                fetchActiveSessions(false);
                 // Reset form
                 setGenerateValidFrom('');
                 setGenerateValidUntil('');
@@ -89,22 +118,30 @@ export default function AdminQrDisplayPage() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 p-6 md:p-8">
+        <div className="min-h-screen p-6 md:p-8">
             <div className="max-w-7xl mx-auto space-y-8">
                 {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Display QR Presensi</h1>
-                        <p className="text-slate-500 font-medium mt-1">
-                            {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-                        </p>
+                        <h1 className="text-3xl font-extrabold text-slate-100 tracking-tight">Display QR Presensi</h1>
+                        <div className="flex flex-col mt-1">
+                            <p className="text-slate-400 font-medium">
+                                {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+                            </p>
+                            {scheduleSource && (
+                                <p className="text-sm font-medium text-emerald-400 mt-1 flex items-center gap-1.5 animate-in fade-in slide-in-from-top-1 duration-500">
+                                    <Icons.CheckCircle className="w-3.5 h-3.5" />
+                                    <span>Jadwal Aktif: {scheduleSource}</span>
+                                </p>
+                            )}
+                        </div>
                     </div>
                     <div className="flex items-center gap-3">
                         <span className="text-xs text-slate-400 font-mono hidden md:inline-block">
                             Updated: {lastUpdated.toLocaleTimeString()}
                         </span>
                         <button
-                            onClick={() => fetchActiveSessions()}
+                            onClick={() => fetchActiveSessions(false)}
                             className="p-3 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 hover:text-purple-600 transition-colors shadow-sm"
                             title="Refresh Data"
                         >
@@ -142,12 +179,12 @@ export default function AdminQrDisplayPage() {
             {/* Generate Modal */}
             {showGenerateModal && (
                 <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden">
-                        <div className="p-6 border-b border-slate-100 flex justify-between items-center">
-                            <h3 className="text-xl font-bold text-slate-800">Generate QR Baru</h3>
+                    <div className="bg-slate-800 rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-700">
+                        <div className="p-6 border-b border-slate-700 flex justify-between items-center">
+                            <h3 className="text-xl font-bold text-slate-100">Generate QR Baru</h3>
                             <button
                                 onClick={() => setShowGenerateModal(false)}
-                                className="p-2 hover:bg-slate-100 rounded-full text-slate-400 hover:text-slate-600 transition-colors"
+                                className="p-2 hover:bg-slate-700 rounded-full text-slate-400 hover:text-slate-200 transition-colors"
                             >
                                 <Icons.X className="w-5 h-5" />
                             </button>
@@ -155,14 +192,14 @@ export default function AdminQrDisplayPage() {
 
                         <div className="p-6 space-y-4">
                             <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-2">Tipe Presensi</label>
+                                <label className="block text-sm font-bold text-slate-300 mb-2">Tipe Presensi</label>
                                 <div className="grid grid-cols-2 gap-3">
                                     <button
                                         type="button"
                                         onClick={() => setGenerateType('CHECK_IN')}
                                         className={`py-3 px-4 rounded-xl font-bold border-2 transition-all ${generateType === 'CHECK_IN'
-                                                ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                                                : 'border-slate-200 text-slate-500 hover:border-emerald-200'
+                                            ? 'border-emerald-500 bg-emerald-900/30 text-emerald-400'
+                                            : 'border-slate-700 text-slate-400 hover:border-emerald-900/50 hover:text-slate-300'
                                             }`}
                                     >
                                         Absen Masuk
@@ -171,8 +208,8 @@ export default function AdminQrDisplayPage() {
                                         type="button"
                                         onClick={() => setGenerateType('CHECK_OUT')}
                                         className={`py-3 px-4 rounded-xl font-bold border-2 transition-all ${generateType === 'CHECK_OUT'
-                                                ? 'border-amber-500 bg-amber-50 text-amber-700'
-                                                : 'border-slate-200 text-slate-500 hover:border-amber-200'
+                                            ? 'border-amber-500 bg-amber-900/30 text-amber-400'
+                                            : 'border-slate-700 text-slate-400 hover:border-amber-900/50 hover:text-slate-300'
                                             }`}
                                     >
                                         Absen Pulang
@@ -181,31 +218,31 @@ export default function AdminQrDisplayPage() {
                             </div>
 
                             <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-2">Waktu Mulai (Opsional)</label>
+                                <label className="block text-sm font-bold text-slate-300 mb-2">Waktu Mulai (Opsional)</label>
                                 <input
                                     type="datetime-local"
                                     value={generateValidFrom}
                                     onChange={(e) => setGenerateValidFrom(e.target.value)}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition-all font-medium text-slate-700"
+                                    className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all font-medium text-slate-100 [color-scheme:dark]"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-bold text-slate-700 mb-2">Waktu Selesai (Opsional)</label>
+                                <label className="block text-sm font-bold text-slate-300 mb-2">Waktu Selesai (Opsional)</label>
                                 <input
                                     type="datetime-local"
                                     value={generateValidUntil}
                                     onChange={(e) => setGenerateValidUntil(e.target.value)}
-                                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:bg-white transition-all font-medium text-slate-700"
+                                    className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all font-medium text-slate-100 [color-scheme:dark]"
                                 />
-                                <p className="text-xs text-slate-400 mt-2">Default: Berlaku 2 jam dari sekarang</p>
+                                <p className="text-xs text-slate-500 mt-2">Default: Berlaku 2 jam dari sekarang</p>
                             </div>
                         </div>
 
-                        <div className="p-6 bg-slate-50 border-t border-slate-100 flex gap-3">
+                        <div className="p-6 bg-slate-900/30 border-t border-slate-700 flex gap-3">
                             <button
                                 onClick={() => setShowGenerateModal(false)}
-                                className="flex-1 py-3 px-4 bg-white border border-slate-200 text-slate-700 font-bold rounded-xl hover:bg-slate-50 hover:text-slate-900 transition-colors"
+                                className="flex-1 py-3 px-4 bg-slate-900 border border-slate-700 text-slate-300 font-bold rounded-xl hover:bg-slate-800 hover:text-white transition-colors"
                             >
                                 Batal
                             </button>
@@ -249,7 +286,7 @@ function QrCard({ title, color, session, formatTime, emptyMessage }: {
     const badgeClass = isEmerald ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700';
 
     return (
-        <div className={`relative overflow-hidden bg-white rounded-3xl shadow-xl border-2 ${session ? 'border-transparent' : 'border-slate-100 border-dashed'} flex flex-col items-center justify-center p-8 md:p-12 min-h-[500px] transition-all`}>
+        <div className={`relative overflow-hidden bg-slate-800 rounded-3xl shadow-xl border-2 ${session ? 'border-transparent' : 'border-slate-700 border-dashed'} flex flex-col items-center justify-center p-8 md:p-12 min-h-[500px] transition-all`}>
             {session ? (
                 <>
                     <div className={`absolute top-0 right-0 left-0 h-2 ${isEmerald ? 'bg-emerald-500' : 'bg-amber-500'}`} />
@@ -259,10 +296,10 @@ function QrCard({ title, color, session, formatTime, emptyMessage }: {
                             <span className={`inline-flex px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider ${badgeClass}`}>
                                 AKTIF
                             </span>
-                            <h2 className="text-3xl font-extrabold text-slate-900">{title}</h2>
+                            <h2 className="text-3xl font-extrabold text-slate-100">{title}</h2>
                         </div>
 
-                        <div className="p-6 bg-white rounded-3xl shadow-2xl ring-4 ring-offset-4 ring-offset-white ring-slate-100">
+                        <div className="p-6 bg-white rounded-3xl shadow-2xl ring-4 ring-offset-4 ring-offset-slate-800 ring-slate-700">
                             <QRCodeSVG
                                 value={session.token}
                                 size={256}
@@ -285,10 +322,10 @@ function QrCard({ title, color, session, formatTime, emptyMessage }: {
                 </>
             ) : (
                 <div className="text-center space-y-4 opacity-50">
-                    <div className="w-24 h-24 bg-slate-100 rounded-3xl mx-auto flex items-center justify-center">
-                        <Icons.Maximize className="w-10 h-10 text-slate-300" />
+                    <div className="w-24 h-24 bg-slate-700/50 rounded-3xl mx-auto flex items-center justify-center">
+                        <Icons.Maximize className="w-10 h-10 text-slate-500" />
                     </div>
-                    <h3 className="text-xl font-bold text-slate-400">{emptyMessage}</h3>
+                    <h3 className="text-xl font-bold text-slate-500">{emptyMessage}</h3>
                 </div>
             )}
         </div>

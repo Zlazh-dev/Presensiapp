@@ -198,9 +198,9 @@ export default function FingerprintSyncPage() {
 
     const getStatusBadge = (status: string) => {
         const colors: Record<string, string> = {
-            present: 'bg-emerald-100 text-emerald-700 ring-emerald-200',
-            late: 'bg-amber-100 text-amber-700 ring-amber-200',
-            absent: 'bg-rose-100 text-rose-700 ring-rose-200',
+            present: 'bg-emerald-900/30 text-emerald-400 ring-emerald-900/50',
+            late: 'bg-amber-900/30 text-amber-400 ring-amber-900/50',
+            absent: 'bg-rose-900/30 text-rose-400 ring-rose-900/50',
         };
         const labels: Record<string, string> = {
             present: 'Hadir',
@@ -218,15 +218,16 @@ export default function FingerprintSyncPage() {
         <div className="max-w-4xl mx-auto p-4 md:p-8 space-y-8">
 
             {/* Header */}
+            {/* Header */}
             <div>
-                <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Sinkronisasi Data</h1>
-                <p className="text-slate-500 font-medium">Upload file log dari mesin fingerprint (.dat / .xls) untuk sinkronisasi kehadiran.</p>
+                <h1 className="text-3xl font-extrabold text-slate-100 tracking-tight">Sinkronisasi Data</h1>
+                <p className="text-slate-400 font-medium">Upload file log dari mesin fingerprint (.dat / .xls) untuk sinkronisasi kehadiran.</p>
             </div>
 
             {/* Teacher List Section */}
-            <div className="bg-white rounded-3xl shadow-lg border border-purple-50 p-6">
-                <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2 mb-4">
-                    <Icons.Users className="w-5 h-5 text-purple-600" />
+            <div className="bg-slate-800 rounded-3xl shadow-lg border border-slate-700 p-6">
+                <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2 mb-4">
+                    <Icons.Users className="w-5 h-5 text-purple-400" />
                     Daftar Guru & Fingerprint ID
                 </h2>
 
@@ -236,42 +237,42 @@ export default function FingerprintSyncPage() {
                         <p className="text-sm text-slate-500 mt-2">Memuat data guru...</p>
                     </div>
                 ) : teacherError ? (
-                    <div className="bg-red-50 border border-red-200 rounded-xl p-4">
-                        <p className="text-sm text-red-700">{teacherError}</p>
+                    <div className="bg-red-900/20 border border-red-900/50 rounded-xl p-4">
+                        <p className="text-sm text-red-400">{teacherError}</p>
                     </div>
                 ) : teachers.length === 0 ? (
-                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-                        <p className="text-sm text-amber-700">Belum ada data guru. Silakan tambahkan guru terlebih dahulu.</p>
+                    <div className="bg-amber-900/20 border border-amber-900/50 rounded-xl p-4">
+                        <p className="text-sm text-amber-400">Belum ada data guru. Silakan tambahkan guru terlebih dahulu.</p>
                     </div>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm border-collapse">
-                            <thead className="bg-slate-50 border-b border-slate-200">
+                            <thead className="bg-slate-900/50 border-b border-slate-700">
                                 <tr>
-                                    <th className="py-3 px-4 font-bold text-xs text-slate-500 uppercase">NIP</th>
-                                    <th className="py-3 px-4 font-bold text-xs text-slate-500 uppercase">Nama</th>
-                                    <th className="py-3 px-4 font-bold text-xs text-slate-500 uppercase">Mata Pelajaran</th>
-                                    <th className="py-3 px-4 font-bold text-xs text-slate-500 uppercase">Fingerprint ID</th>
-                                    <th className="py-3 px-4 font-bold text-xs text-slate-500 uppercase text-center">Status</th>
+                                    <th className="py-3 px-4 font-bold text-xs text-slate-400 uppercase">NIP</th>
+                                    <th className="py-3 px-4 font-bold text-xs text-slate-400 uppercase">Nama</th>
+                                    <th className="py-3 px-4 font-bold text-xs text-slate-400 uppercase">Mata Pelajaran</th>
+                                    <th className="py-3 px-4 font-bold text-xs text-slate-400 uppercase">Fingerprint ID</th>
+                                    <th className="py-3 px-4 font-bold text-xs text-slate-400 uppercase text-center">Status</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-slate-100">
+                            <tbody className="divide-y divide-slate-700">
                                 {teachers.map((teacher) => (
-                                    <tr key={teacher.id} className="hover:bg-slate-50">
-                                        <td className="py-3 px-4 font-mono text-slate-600">{teacher.nip}</td>
-                                        <td className="py-3 px-4 font-bold text-slate-800">{teacher.name}</td>
-                                        <td className="py-3 px-4 text-slate-600">{teacher.subject}</td>
+                                    <tr key={teacher.id} className="hover:bg-slate-700/50 transition-colors">
+                                        <td className="py-3 px-4 font-mono text-slate-400">{teacher.nip}</td>
+                                        <td className="py-3 px-4 font-bold text-slate-200">{teacher.name}</td>
+                                        <td className="py-3 px-4 text-slate-400">{teacher.subject}</td>
                                         <td className="py-3 px-4">
                                             {teacher.fingerprint_id ? (
-                                                <span className="font-mono text-purple-600 font-bold">{teacher.fingerprint_id}</span>
+                                                <span className="font-mono text-purple-400 font-bold">{teacher.fingerprint_id}</span>
                                             ) : (
-                                                <span className="text-xs text-slate-400 italic">Belum diset</span>
+                                                <span className="text-xs text-slate-600 italic">Belum diset</span>
                                             )}
                                         </td>
                                         <td className="py-3 px-4 text-center">
                                             <span className={`inline-flex px-2 py-1 rounded-full text-xs font-bold ${teacher.status === 'active'
-                                                    ? 'bg-emerald-100 text-emerald-700'
-                                                    : 'bg-slate-100 text-slate-600'
+                                                ? 'bg-emerald-900/30 text-emerald-400'
+                                                : 'bg-slate-900/50 text-slate-500'
                                                 }`}>
                                                 {teacher.status === 'active' ? 'Aktif' : 'Nonaktif'}
                                             </span>
@@ -285,9 +286,9 @@ export default function FingerprintSyncPage() {
             </div>
 
             {/* Explanation Card */}
-            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-3xl p-6 text-white shadow-lg">
+            <div className="bg-gradient-to-r from-purple-900/80 to-indigo-900/80 border border-purple-700/50 rounded-3xl p-6 text-white shadow-lg">
                 <div className="flex items-start gap-4">
-                    <div className="p-3 bg-white/20 rounded-2xl backdrop-blur-sm">
+                    <div className="p-3 bg-white/10 rounded-2xl backdrop-blur-sm border border-white/10">
                         <Icons.Fingerprint className="w-8 h-8" />
                     </div>
                     <div>
@@ -304,9 +305,9 @@ export default function FingerprintSyncPage() {
             </div>
 
             {/* Upload Section */}
-            <div className="bg-white rounded-3xl shadow-lg border border-purple-50 p-6 space-y-6">
-                <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                    <Icons.Upload className="w-5 h-5 text-purple-600" />
+            <div className="bg-slate-800 rounded-3xl shadow-lg border border-slate-700 p-6 space-y-6">
+                <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
+                    <Icons.Upload className="w-5 h-5 text-purple-400" />
                     Upload File Log
                 </h2>
 
@@ -315,31 +316,31 @@ export default function FingerprintSyncPage() {
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
-                    className={`border-2 border-dashed rounded-2xl p-12 transition-all text-center cursor-pointer hover:border-purple-400 hover:bg-purple-50/50 ${isDragging ? 'border-purple-500 bg-purple-50' : 'border-slate-200'
+                    className={`border-2 border-dashed rounded-2xl p-12 transition-all text-center cursor-pointer hover:border-purple-500/50 hover:bg-purple-900/10 ${isDragging ? 'border-purple-500 bg-purple-900/20' : 'border-slate-700'
                         }`}
                 >
                     {file ? (
                         <div className="space-y-2">
-                            <div className="flex items-center justify-center gap-3 text-emerald-600">
+                            <div className="flex items-center justify-center gap-3 text-emerald-500">
                                 <Icons.FileText className="w-12 h-12" />
                             </div>
-                            <p className="font-bold text-slate-800">{file.name}</p>
+                            <p className="font-bold text-slate-200">{file.name}</p>
                             <p className="text-sm text-slate-500">{(file.size / 1024).toFixed(2)} KB</p>
                             <button
                                 onClick={() => setFile(null)}
-                                className="text-xs text-rose-600 hover:text-rose-700 font-bold mt-2"
+                                className="text-xs text-rose-500 hover:text-rose-400 font-bold mt-2"
                             >
                                 Hapus File
                             </button>
                         </div>
                     ) : (
                         <div className="space-y-4">
-                            <div className="mx-auto w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center">
-                                <Icons.Upload className="w-8 h-8 text-purple-600" />
+                            <div className="mx-auto w-16 h-16 bg-purple-900/30 rounded-2xl flex items-center justify-center">
+                                <Icons.Upload className="w-8 h-8 text-purple-500" />
                             </div>
                             <div>
-                                <p className="font-bold text-slate-700 mb-1">Drag & drop file di sini</p>
-                                <p className="text-sm text-slate-400">atau klik untuk pilih file</p>
+                                <p className="font-bold text-slate-300 mb-1">Drag & drop file di sini</p>
+                                <p className="text-sm text-slate-500">atau klik untuk pilih file</p>
                             </div>
                             <input
                                 type="file"
@@ -350,7 +351,7 @@ export default function FingerprintSyncPage() {
                             />
                             <label
                                 htmlFor="file-upload"
-                                className="inline-block px-6 py-2 bg-purple-600 text-white rounded-xl font-bold hover:bg-purple-700 transition-all cursor-pointer shadow-lg shadow-purple-200"
+                                className="inline-block px-6 py-2 bg-purple-600 text-white rounded-xl font-bold hover:bg-purple-700 transition-all cursor-pointer shadow-lg shadow-purple-900/50"
                             >
                                 Pilih File
                             </label>
@@ -378,7 +379,7 @@ export default function FingerprintSyncPage() {
                 </button>
 
                 {/* Note */}
-                <p className="text-xs text-slate-400 text-center">
+                <p className="text-xs text-slate-500 text-center">
                     <strong>Catatan:</strong> File yang diupload akan diproses secara otomatis. Pastikan format sesuai dengan standar mesin fingerprint.
                 </p>
             </div>
@@ -400,7 +401,7 @@ export default function FingerprintSyncPage() {
 
             {/* Result Section */}
             {result && (
-                <div className="bg-white rounded-3xl shadow-lg border border-emerald-50 p-6 space-y-6">
+                <div className="bg-slate-800 rounded-3xl shadow-lg border border-emerald-900/30 p-6 space-y-6">
                     <div className="flex items-center gap-3">
                         <div className="p-3 bg-emerald-100 rounded-2xl">
                             <Icons.CheckCircle className="w-8 h-8 text-emerald-600" />
@@ -412,17 +413,18 @@ export default function FingerprintSyncPage() {
                     </div>
 
                     {/* Stats */}
+                    {/* Stats */}
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                        <div className="bg-emerald-50 p-4 rounded-xl text-center border border-emerald-100">
-                            <div className="text-3xl font-bold text-emerald-600">{result.imported}</div>
+                        <div className="bg-emerald-900/20 p-4 rounded-xl text-center border border-emerald-900/30">
+                            <div className="text-3xl font-bold text-emerald-500">{result.imported}</div>
                             <div className="text-xs font-bold text-slate-400 uppercase mt-1">Imported</div>
                         </div>
-                        <div className="bg-amber-50 p-4 rounded-xl text-center border border-amber-100">
-                            <div className="text-3xl font-bold text-amber-600">{result.skipped}</div>
+                        <div className="bg-amber-900/20 p-4 rounded-xl text-center border border-amber-900/30">
+                            <div className="text-3xl font-bold text-amber-500">{result.skipped}</div>
                             <div className="text-xs font-bold text-slate-400 uppercase mt-1">Skipped</div>
                         </div>
-                        <div className="bg-blue-50 p-4 rounded-xl text-center border border-blue-100 col-span-2 md:col-span-1">
-                            <div className="text-sm font-bold text-blue-900">
+                        <div className="bg-blue-900/20 p-4 rounded-xl text-center border border-blue-900/30 col-span-2 md:col-span-1">
+                            <div className="text-sm font-bold text-blue-400">
                                 {formatDate(result.processed_date_range.start)} - {formatDate(result.processed_date_range.end)}
                             </div>
                             <div className="text-xs font-bold text-slate-400 uppercase mt-1">Periode</div>
@@ -432,32 +434,32 @@ export default function FingerprintSyncPage() {
                     {/* Samples Table */}
                     {result.samples && result.samples.length > 0 && (
                         <div>
-                            <h3 className="font-bold text-slate-700 mb-3">Contoh Data Terproses:</h3>
+                            <h3 className="font-bold text-slate-300 mb-3">Contoh Data Terproses:</h3>
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left text-sm border-collapse">
-                                    <thead className="bg-slate-50 border-b border-slate-200">
+                                    <thead className="bg-slate-900/50 border-b border-slate-700">
                                         <tr>
-                                            <th className="py-3 px-4 font-bold text-xs text-slate-500 uppercase">Guru</th>
-                                            <th className="py-3 px-4 font-bold text-xs text-slate-500 uppercase">Tanggal</th>
-                                            <th className="py-3 px-4 font-bold text-xs text-slate-500 uppercase">Masuk</th>
-                                            <th className="py-3 px-4 font-bold text-xs text-slate-500 uppercase">Pulang</th>
-                                            <th className="py-3 px-4 font-bold text-xs text-slate-500 uppercase text-center">Status</th>
+                                            <th className="py-3 px-4 font-bold text-xs text-slate-400 uppercase">Guru</th>
+                                            <th className="py-3 px-4 font-bold text-xs text-slate-400 uppercase">Tanggal</th>
+                                            <th className="py-3 px-4 font-bold text-xs text-slate-400 uppercase">Masuk</th>
+                                            <th className="py-3 px-4 font-bold text-xs text-slate-400 uppercase">Pulang</th>
+                                            <th className="py-3 px-4 font-bold text-xs text-slate-400 uppercase text-center">Status</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-slate-100">
+                                    <tbody className="divide-y divide-slate-700/50">
                                         {result.samples.map((sample, idx) => (
-                                            <tr key={idx} className="hover:bg-slate-50">
+                                            <tr key={idx} className="hover:bg-slate-700/30">
                                                 <td className="py-3 px-4">
-                                                    <div className="font-bold text-slate-800">{sample.teacher_name}</div>
+                                                    <div className="font-bold text-slate-200">{sample.teacher_name}</div>
                                                     <div className="text-xs font-mono text-slate-400">{sample.teacher_nip}</div>
                                                 </td>
-                                                <td className="py-3 px-4 text-slate-600">{formatDate(sample.date)}</td>
-                                                <td className="py-3 px-4 font-mono text-slate-600">{sample.check_in || '-'}</td>
-                                                <td className="py-3 px-4 font-mono text-slate-600">{sample.check_out || '-'}</td>
+                                                <td className="py-3 px-4 text-slate-400">{formatDate(sample.date)}</td>
+                                                <td className="py-3 px-4 font-mono text-slate-400">{sample.check_in || '-'}</td>
+                                                <td className="py-3 px-4 font-mono text-slate-400">{sample.check_out || '-'}</td>
                                                 <td className="py-3 px-4 text-center">
                                                     {getStatusBadge(sample.status)}
                                                     {sample.late_minutes > 0 && (
-                                                        <div className="text-[10px] text-amber-600 font-bold mt-1">+{sample.late_minutes}m</div>
+                                                        <div className="text-[10px] text-amber-500 font-bold mt-1">+{sample.late_minutes}m</div>
                                                     )}
                                                 </td>
                                             </tr>

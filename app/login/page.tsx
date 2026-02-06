@@ -67,18 +67,19 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-50 to-indigo-100 p-4">
+
+        <div className="min-h-screen flex items-center justify-center bg-slate-900 p-4">
             <div className="w-full max-w-md">
-                <div className="bg-white rounded-2xl shadow-xl p-8">
+                <div className="bg-slate-800 rounded-2xl shadow-xl p-8 border border-slate-700">
                     <div className="text-center mb-8">
-                        <h1 className="text-3xl font-bold text-slate-800 mb-2">
+                        <h1 className="text-3xl font-bold text-slate-100 mb-2">
                             Presensi Guru
                         </h1>
-                        <p className="text-slate-500">Silakan login untuk melanjutkan</p>
+                        <p className="text-slate-400">Silakan login untuk melanjutkan</p>
                     </div>
 
                     {error && (
-                        <div className="mb-6 p-4 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-sm">
+                        <div className="mb-6 p-4 bg-rose-900/30 border border-rose-900/50 rounded-lg text-rose-400 text-sm">
                             {error}
                         </div>
                     )}
@@ -87,7 +88,7 @@ export default function LoginPage() {
                         <div>
                             <label
                                 htmlFor="username"
-                                className="block text-sm font-medium text-slate-700 mb-2"
+                                className="block text-sm font-medium text-slate-300 mb-2"
                             >
                                 Username
                             </label>
@@ -96,7 +97,7 @@ export default function LoginPage() {
                                 id="username"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
-                                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-slate-100 placeholder-slate-500"
                                 placeholder="Masukkan username"
                                 required
                                 disabled={loading}
@@ -106,7 +107,7 @@ export default function LoginPage() {
                         <div>
                             <label
                                 htmlFor="password"
-                                className="block text-sm font-medium text-slate-700 mb-2"
+                                className="block text-sm font-medium text-slate-300 mb-2"
                             >
                                 Password
                             </label>
@@ -115,7 +116,7 @@ export default function LoginPage() {
                                 id="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                className="w-full px-4 py-3 bg-slate-900 border border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-slate-100 placeholder-slate-500"
                                 placeholder="Masukkan password"
                                 required
                                 disabled={loading}

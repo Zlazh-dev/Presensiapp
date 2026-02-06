@@ -167,12 +167,12 @@ export default function AttendanceReportPage() {
 
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Laporan Bulanan</h1>
-                <p className="text-slate-500 font-medium">Rekapitulasi kehadiran guru per bulan.</p>
+                <h1 className="text-3xl font-extrabold text-slate-100 tracking-tight">Laporan Bulanan</h1>
+                <p className="text-slate-400 font-medium">Rekapitulasi kehadiran guru per bulan.</p>
             </div>
 
             {/* Controls Section */}
-            <div className="bg-white p-6 rounded-3xl shadow-lg border border-purple-50">
+            <div className="bg-slate-800 p-6 rounded-3xl shadow-lg border border-slate-700">
                 <form onSubmit={handleRefresh} className="flex flex-col md:flex-row gap-4 items-end">
 
                     {/* Month Filter */}
@@ -180,7 +180,7 @@ export default function AttendanceReportPage() {
                         <label className="block text-xs font-bold text-slate-400 mb-1 uppercase">Bulan</label>
                         <input
                             type="month"
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 font-bold text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 [color-scheme:dark]"
                             value={month}
                             onChange={(e) => setMonth(e.target.value)}
                             required
@@ -191,7 +191,7 @@ export default function AttendanceReportPage() {
                     <div className="w-full md:w-1/4">
                         <label className="block text-xs font-bold text-slate-400 mb-1 uppercase">Mode Laporan</label>
                         <select
-                            className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
+                            className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 font-bold text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
                             value={mode}
                             onChange={(e) => {
                                 setMode(e.target.value as 'all' | 'single');
@@ -208,7 +208,7 @@ export default function AttendanceReportPage() {
                         <div className="w-full md:w-1/4">
                             <label className="block text-xs font-bold text-slate-400 mb-1 uppercase">Pilih Guru</label>
                             <select
-                                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
+                                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 font-bold text-slate-200 focus:outline-none focus:ring-2 focus:ring-purple-500 cursor-pointer"
                                 value={selectedTeacherId || ''}
                                 onChange={(e) => setSelectedTeacherId(Number(e.target.value))}
                                 required={mode === 'single'}
@@ -247,11 +247,11 @@ export default function AttendanceReportPage() {
 
             {/* Error Message */}
             {error && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
-                    <p className="text-red-600 font-bold mb-2">{error}</p>
+                <div className="bg-red-900/20 border border-red-900/50 rounded-xl p-6 text-center">
+                    <p className="text-red-400 font-bold mb-2">{error}</p>
                     <button
                         onClick={fetchReport}
-                        className="text-sm text-red-700 underline hover:no-underline"
+                        className="text-sm text-red-300 underline hover:no-underline"
                     >
                         Coba Lagi
                     </button>
@@ -262,51 +262,51 @@ export default function AttendanceReportPage() {
             {!loading && !error && (
                 <div className="space-y-4">
                     <div className="flex items-center justify-between">
-                        <h2 className="text-xl font-bold text-slate-800">
+                        <h2 className="text-xl font-bold text-slate-200">
                             Hasil Laporan
                         </h2>
-                        <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold">
+                        <span className="bg-purple-900/30 text-purple-400 px-3 py-1 rounded-full text-xs font-bold">
                             Total: {totalTeachers} Guru
                         </span>
                     </div>
 
                     {data.length === 0 ? (
-                        <div className="bg-white rounded-3xl p-12 text-center shadow-lg border border-purple-50">
-                            <p className="text-slate-500 font-medium">Belum ada data kehadiran untuk periode ini.</p>
+                        <div className="bg-slate-800 rounded-3xl p-12 text-center shadow-lg border border-slate-700">
+                            <p className="text-slate-400 font-medium">Belum ada data kehadiran untuk periode ini.</p>
                         </div>
                     ) : (
-                        <div className="bg-white rounded-3xl shadow-lg border border-purple-50 overflow-hidden">
+                        <div className="bg-slate-800 rounded-3xl shadow-lg border border-slate-700 overflow-hidden">
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left border-collapse">
-                                    <thead className="bg-purple-50/50 border-b border-purple-100">
+                                    <thead className="bg-slate-900/50 border-b border-slate-700">
                                         <tr>
-                                            <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-center w-12">No</th>
-                                            <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">NIP</th>
-                                            <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Nama</th>
-                                            <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider">Mapel</th>
-                                            <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Hari Kerja</th>
-                                            <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Hadir</th>
-                                            <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Telat</th>
-                                            <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Izin</th>
-                                            <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Sakit</th>
-                                            <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Alpha</th>
-                                            <th className="py-4 px-6 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Total Telat</th>
+                                            <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase tracking-wider text-center w-12">No</th>
+                                            <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase tracking-wider">NIP</th>
+                                            <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase tracking-wider">Nama</th>
+                                            <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase tracking-wider">Mapel</th>
+                                            <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase tracking-wider text-center">Hari Kerja</th>
+                                            <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase tracking-wider text-center">Hadir</th>
+                                            <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase tracking-wider text-center">Telat</th>
+                                            <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase tracking-wider text-center">Izin</th>
+                                            <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase tracking-wider text-center">Sakit</th>
+                                            <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase tracking-wider text-center">Alpha</th>
+                                            <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase tracking-wider text-center">Total Telat</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-slate-100">
+                                    <tbody className="divide-y divide-slate-700">
                                         {data.map((row, index) => (
-                                            <tr key={row.teacherId} className="hover:bg-purple-50/30 transition-colors">
+                                            <tr key={row.teacherId} className="hover:bg-slate-700/50 transition-colors">
                                                 <td className="py-4 px-6 text-center font-medium text-slate-500">{index + 1}</td>
-                                                <td className="py-4 px-6 font-mono text-sm text-slate-600">{row.nip}</td>
-                                                <td className="py-4 px-6 font-bold text-slate-800">{row.teacherName}</td>
-                                                <td className="py-4 px-6 text-slate-600">{row.subject}</td>
-                                                <td className="py-4 px-6 text-center font-bold text-slate-700">{row.totalDays}</td>
-                                                <td className="py-4 px-6 text-center font-bold text-emerald-600 bg-emerald-50/30">{row.presentCount}</td>
-                                                <td className="py-4 px-6 text-center font-bold text-amber-600 bg-amber-50/30">{row.lateCount}</td>
-                                                <td className="py-4 px-6 text-center font-bold text-blue-600">{row.leaveCount}</td>
-                                                <td className="py-4 px-6 text-center font-bold text-cyan-600">{row.sickCount}</td>
-                                                <td className="py-4 px-6 text-center font-bold text-rose-600 bg-rose-50/30">{row.absentCount}</td>
-                                                <td className="py-4 px-6 text-center text-sm font-medium text-slate-600">
+                                                <td className="py-4 px-6 font-mono text-sm text-slate-400">{row.nip}</td>
+                                                <td className="py-4 px-6 font-bold text-slate-200">{row.teacherName}</td>
+                                                <td className="py-4 px-6 text-slate-400">{row.subject}</td>
+                                                <td className="py-4 px-6 text-center font-bold text-slate-300">{row.totalDays}</td>
+                                                <td className="py-4 px-6 text-center font-bold text-emerald-400 bg-emerald-900/30">{row.presentCount}</td>
+                                                <td className="py-4 px-6 text-center font-bold text-amber-400 bg-amber-900/30">{row.lateCount}</td>
+                                                <td className="py-4 px-6 text-center font-bold text-blue-400">{row.leaveCount}</td>
+                                                <td className="py-4 px-6 text-center font-bold text-cyan-400">{row.sickCount}</td>
+                                                <td className="py-4 px-6 text-center font-bold text-rose-400 bg-rose-900/30">{row.absentCount}</td>
+                                                <td className="py-4 px-6 text-center text-sm font-medium text-slate-400">
                                                     {row.totalLateMinutes > 0 ? `${row.totalLateMinutes}m` : '-'}
                                                 </td>
                                             </tr>
@@ -323,8 +323,8 @@ export default function AttendanceReportPage() {
             {loading && (
                 <div className="flex justify-center py-12">
                     <div className="text-center">
-                        <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-purple-600 mb-4"></div>
-                        <p className="text-slate-500 font-medium">Memuat data laporan...</p>
+                        <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-purple-500 mb-4"></div>
+                        <p className="text-slate-400 font-medium">Memuat data laporan...</p>
                     </div>
                 </div>
             )}
