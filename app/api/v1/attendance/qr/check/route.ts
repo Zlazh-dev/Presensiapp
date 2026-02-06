@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { QrSessionType } from '@prisma/client';
 
 // Type for attendance status values
 type AttendanceStatusType = 'PRESENT' | 'LATE' | 'ABSENT' | 'LEAVE' | 'SICK';
+type QrSessionTypeValue = 'CHECK_IN' | 'CHECK_OUT';
 
 interface CheckQrRequest {
     token: string;
@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
             date: qrSession.date,
         };
 
-        if (qrSession.type === QrSessionType.CHECK_IN) {
+        if (qrSession.type === 'CHECK_IN') {
             attendanceData.checkInTime = now;
 
             // Calculate status and late minutes
@@ -173,7 +173,7 @@ export async function POST(request: NextRequest) {
                     date: qrSession.date,
                 },
             },
-            update: qrSession.type === QrSessionType.CHECK_IN
+            update: qrSession.type === 'CHECK_IN'
                 ? {
                     checkInTime: attendanceData.checkInTime,
                     status: attendanceData.status,
@@ -182,7 +182,7 @@ export async function POST(request: NextRequest) {
                 : {
                     checkOutTime: attendanceData.checkOutTime,
                 },
-            create: qrSession.type === QrSessionType.CHECK_IN
+            create: qrSession.type === 'CHECK_IN'
                 ? {
                     teacherId: teacher.id,
                     date: qrSession.date,
@@ -201,7 +201,7 @@ export async function POST(request: NextRequest) {
 
         // Return response
         return NextResponse.json({
-            message: qrSession.type === QrSessionType.CHECK_IN ? 'Check-in recorded' : 'Check-out recorded',
+            message: qrSession.type === 'CHECK_IN' ? 'Check-in recorded' : 'Check-out recorded',
             date: getDateString(qrSession.date),
             type: qrSession.type,
             attendance: {
