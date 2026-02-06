@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { AttendanceStatus, QrSessionType } from '@prisma/client';
+import { QrSessionType } from '@prisma/client';
+
+// Type for attendance status values
+type AttendanceStatusType = 'PRESENT' | 'LATE' | 'ABSENT' | 'LEAVE' | 'SICK';
 
 interface CheckQrRequest {
     token: string;
@@ -150,10 +153,10 @@ export async function POST(request: NextRequest) {
             const allowedTime = startTimeMinutes + tolerance;
 
             if (checkInMinutes <= allowedTime) {
-                attendanceData.status = AttendanceStatus.PRESENT;
+                attendanceData.status = 'PRESENT' as AttendanceStatusType;
                 attendanceData.lateMinutes = 0;
             } else {
-                attendanceData.status = AttendanceStatus.LATE;
+                attendanceData.status = 'LATE' as AttendanceStatusType;
                 attendanceData.lateMinutes = Math.max(0, checkInMinutes - allowedTime);
             }
         } else {
@@ -191,7 +194,7 @@ export async function POST(request: NextRequest) {
                     teacherId: teacher.id,
                     date: qrSession.date,
                     checkOutTime: attendanceData.checkOutTime,
-                    status: AttendanceStatus.ABSENT, // Will be updated when check-in happens
+                    status: 'ABSENT' as AttendanceStatusType, // Will be updated when check-in happens
                     lateMinutes: 0,
                 },
         });
