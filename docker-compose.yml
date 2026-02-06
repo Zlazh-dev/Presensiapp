@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16
+    container_name: presensiapp_db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: presensi_user
+      POSTGRES_PASSWORD: presensi_password
+      POSTGRES_DB: presensi_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U presensi_user -d presensi_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

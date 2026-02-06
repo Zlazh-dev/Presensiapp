@@ -1,0 +1,34 @@
+{
+    "logs": [
+        {
+            "fingerprint_id": "FP-001",
+            "scanned_at": "2026-02-06T06:55:00.000Z",
+            "raw_type": "IN"
+        },
+        {
+            "fingerprint_id": "FP-001",
+            "scanned_at": "2026-02-06T15:10:00.000Z",
+            "raw_type": "OUT"
+        },
+        {
+            "fingerprint_id": "FP-002",
+            "scanned_at": "2026-02-06T06:50:00.000Z",
+            "raw_type": "IN"
+        },
+        {
+            "fingerprint_id": "FP-002",
+            "scanned_at": "2026-02-06T15:05:00.000Z",
+            "raw_type": "OUT"
+        },
+        {
+            "fingerprint_id": "FP-003",
+            "scanned_at": "2026-02-06T07:20:00.000Z",
+            "raw_type": "IN"
+        },
+        {
+            "fingerprint_id": "FP-003",
+            "scanned_at": "2026-02-06T15:30:00.000Z",
+            "raw_type": "OUT"
+        }
+    ]
+}

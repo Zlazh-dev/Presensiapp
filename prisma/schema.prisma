@@ -1,0 +1,147 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Enums
+enum UserRole {
+  ADMIN
+  TEACHER
+  PRINCIPAL
+}
+
+enum TeacherStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum FingerprintType {
+  IN
+  OUT
+}
+
+enum AttendanceStatus {
+  PRESENT
+  LATE
+  LEAVE
+  SICK
+  ABSENT
+}
+
+enum QrSessionType {
+  CHECK_IN
+  CHECK_OUT
+}
+
+// Models
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  username     String   @unique
+  passwordHash String
+  role         UserRole
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Teacher {
+  id            Int            @id @default(autoincrement())
+  nip           String         @unique
+  name          String
+  subject       String
+  fingerprintId String?        @map("fingerprint_id")
+  status        TeacherStatus  @default(ACTIVE)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  
+  // Relations
+  attendances   Attendance[]
+
+  @@map("teachers")
+}
+
+model WorkSchedule {
+  id                   Int      @id @default(autoincrement())
+  name                 String   // Template name: "Regular Day", "Ramadan", etc.
+  startTime            String   @map("start_time")        // Format: "07:00"
+  endTime              String   @map("end_time")          // Format: "15:00"
+  lateToleranceMinutes Int      @map("late_tolerance_minutes")
+  workingDays          String[] @map("working_days")      // ["Mon", "Tue", "Wed", "Thu", "Fri"]
+  isDefault            Boolean  @default(false) @map("is_default")
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  // Relations
+  assignments          WorkScheduleAssignment[]
+
+  @@map("work_schedules")
+}
+
+model WorkScheduleAssignment {
+  id             Int          @id @default(autoincrement())
+  workScheduleId Int          @map("work_schedule_id")
+  startDate      DateTime     @map("start_date")
+  endDate        DateTime     @map("end_date")
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  // Relations
+  workSchedule   WorkSchedule @relation(fields: [workScheduleId], references: [id], onDelete: Restrict)
+
+  @@index([startDate, endDate])
+  @@map("work_schedule_assignments")
+}
+
+model FingerprintLog {
+  id            Int             @id @default(autoincrement())
+  fingerprintId String          @map("fingerprint_id")
+  scannedAt     DateTime        @map("scanned_at")
+  rawType       FingerprintType @map("raw_type")
+  createdAt     DateTime        @default(now())
+
+  @@index([fingerprintId, scannedAt])
+  @@map("fingerprint_logs")
+}
+
+model Attendance {
+  id           Int              @id @default(autoincrement())
+  teacherId    Int              @map("teacher_id")
+  date         DateTime
+  checkInTime  DateTime?        @map("check_in_time")
+  checkOutTime DateTime?        @map("check_out_time")
+  status       AttendanceStatus
+  lateMinutes  Int              @default(0) @map("late_minutes")
+  notes        String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  // Relations
+  teacher      Teacher          @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+
+  @@unique([teacherId, date])
+  @@index([date])
+  @@map("attendances")
+}
+
+model QrSession {
+  id         Int            @id @default(autoincrement())
+  type       QrSessionType
+  token      String         @unique
+  date       DateTime       // Date for attendance (date-only comparison)
+  validFrom  DateTime       @map("valid_from")
+  validUntil DateTime       @map("valid_until")
+  isActive   Boolean        @default(true) @map("is_active")
+  createdAt  DateTime       @default(now()) @map("created_at")
+
+  @@index([date, type])
+  @@map("qr_sessions")
+}
