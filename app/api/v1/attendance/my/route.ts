@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { Attendance } from '@prisma/client';
 
 // GET /api/v1/attendance/my - Get attendance history for logged-in teacher
 export async function GET(request: NextRequest) {
@@ -64,7 +65,7 @@ export async function GET(request: NextRequest) {
         });
 
         // Transform data to match API response format
-        const data = attendances.map(att => ({
+        const data = attendances.map((att: Attendance) => ({
             date: att.date.toISOString().split('T')[0], // YYYY-MM-DD
             check_in_time: att.checkInTime
                 ? att.checkInTime.toISOString().substring(11, 16) // HH:mm
@@ -81,11 +82,11 @@ export async function GET(request: NextRequest) {
         // Calculate summary
         const summary = {
             total_days: attendances.length,
-            present: attendances.filter(a => a.status === 'PRESENT').length,
-            late: attendances.filter(a => a.status === 'LATE').length,
-            leave: attendances.filter(a => a.status === 'LEAVE').length,
-            sick: attendances.filter(a => a.status === 'SICK').length,
-            absent: attendances.filter(a => a.status === 'ABSENT').length,
+            present: attendances.filter((a: Attendance) => a.status === 'PRESENT').length,
+            late: attendances.filter((a: Attendance) => a.status === 'LATE').length,
+            leave: attendances.filter((a: Attendance) => a.status === 'LEAVE').length,
+            sick: attendances.filter((a: Attendance) => a.status === 'SICK').length,
+            absent: attendances.filter((a: Attendance) => a.status === 'ABSENT').length,
         };
 
         return NextResponse.json({
