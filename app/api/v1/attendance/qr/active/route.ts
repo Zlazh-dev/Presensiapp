@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
         });
 
         // Transform response
-        const data = qrSessions.map((session) => ({
+        const data = qrSessions.map((session: (typeof qrSessions)[number]) => ({
             id: session.id,
             type: session.type,
             token: session.token,
